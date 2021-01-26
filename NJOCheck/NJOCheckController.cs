@@ -27,6 +27,7 @@ namespace NJOCheck
         void Constractor(DiContainer container)
         {
             this.gameplaySetupViewController = container.TryResolve<GameplaySetupViewController>();
+            this.playerDataModel = container.Resolve<PlayerDataModel>();
             this.playerSettingsPanelController = this.gameplaySetupViewController.GetField<PlayerSettingsPanelController, GameplaySetupViewController>("_playerSettingsPanelController");
             Plugin.Log.Debug($"{this.playerSettingsPanelController}");
         }
@@ -55,7 +56,7 @@ namespace NJOCheck
                 this.notificationText.autoSizeTextContainer = false;
                 this.noteJumpStartBeatOffsetDropdown = this.playerSettingsPanelController.GetField<NoteJumpStartBeatOffsetDropdown, PlayerSettingsPanelController>("_noteJumpStartBeatOffsetDropdown");
                 this.noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
-                this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(0);
+                this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(noteJumpStartBeatOffsetDropdown.GetIdxForOffset(playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset));
             }
             catch (Exception e) {
                 Plugin.Log.Error(e);
@@ -84,6 +85,7 @@ namespace NJOCheck
         }
 
         GameObject screen;
+        PlayerDataModel playerDataModel;
         GameplaySetupViewController gameplaySetupViewController;
         PlayerSettingsPanelController playerSettingsPanelController;
         NoteJumpStartBeatOffsetDropdown noteJumpStartBeatOffsetDropdown;
@@ -95,28 +97,28 @@ namespace NJOCheck
             {
                 Text = "CLOSE",
                 Scale = new Vector3(0.3f, 0.3f, 0.3f),
-                Position = new Vector3(0f, 1.5f, 10f),
+                Position = new Vector3(0f, 1.5f, 6f),
                 TextColor = Color.red
             },
             new TextParameter()
             {
                 Text = "CLOSER",
                 Scale = new Vector3(0.7f, 0.7f, 0.7f),
-                Position = new Vector3(0f, 1.5f, 20f),
+                Position = new Vector3(0f, 1.5f, 14f),
                 TextColor = Color.yellow
             },
             new TextParameter()
             {
                 Text = "DEFAULT",
                 Scale = new Vector3(1f, 1f, 1f),
-                Position = new Vector3(0f, 1.5f, 30f),
+                Position = new Vector3(0f, 1.5f, 22f),
                 TextColor = Color.white
             },
             new TextParameter()
             {
                 Text = "FURTHER",
                 Scale = new Vector3(1.5f, 1.5f, 1.5f),
-                Position = new Vector3(0f, 3f, 40f),
+                Position = new Vector3(0f, 3f, 30f),
                 TextColor = Color.blue
             },
             new TextParameter()
