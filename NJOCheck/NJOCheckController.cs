@@ -112,7 +112,7 @@ namespace NJOCheck
                 Text = "DEFAULT",
                 Scale = new Vector3(1f, 1f, 1f),
                 Position = new Vector3(0f, 1.5f, 22f),
-                TextColor = Color.white
+                TextColor = new Color(0, 0, 0, 0)
             },
             new TextParameter()
             {
