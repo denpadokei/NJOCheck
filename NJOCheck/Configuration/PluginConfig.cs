@@ -1,6 +1,7 @@
-﻿/*
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace NJOCheck.Configuration
@@ -8,8 +9,11 @@ namespace NJOCheck.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
-        public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
-
+        public virtual bool CloseVisible { get; set; } = true;
+        public virtual bool CloserVisible { get; set; } = true;
+        public virtual bool DefaultVisible { get; set; } = false;
+        public virtual bool FurtherVisible { get; set; } = true;
+        public virtual bool FarVisible { get; set; } = true;
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
@@ -35,4 +39,3 @@ namespace NJOCheck.Configuration
         }
     }
 }
-*/

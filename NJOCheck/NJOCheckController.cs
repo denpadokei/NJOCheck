@@ -1,6 +1,7 @@
 ﻿using BeatSaberMarkupLanguage;
 using HMUI;
 using IPA.Utilities;
+using NJOCheck.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,10 +27,46 @@ namespace NJOCheck
         [Inject]
         void Constractor(DiContainer container)
         {
+            this.CreateParams();
             this.gameplaySetupViewController = container.TryResolve<GameplaySetupViewController>();
             this.playerDataModel = container.Resolve<PlayerDataModel>();
             this.playerSettingsPanelController = this.gameplaySetupViewController.GetField<PlayerSettingsPanelController, GameplaySetupViewController>("_playerSettingsPanelController");
             Plugin.Log.Debug($"{this.playerSettingsPanelController}");
+        }
+
+        private void CreateParams()
+        {
+            this.textParameters = new TextParameter[5];
+            if (PluginConfig.Instance.CloseVisible) {
+                this.textParameters[0] = defaultParams[0];
+            }
+            else {
+                this.textParameters[0] = visibleParam;
+            }
+            if (PluginConfig.Instance.CloserVisible) {
+                this.textParameters[1] = defaultParams[1];
+            }
+            else {
+                this.textParameters[1] = visibleParam;
+            }
+            if (PluginConfig.Instance.DefaultVisible) {
+                this.textParameters[2] = defaultParams[2];
+            }
+            else {
+                this.textParameters[2] = visibleParam;
+            }
+            if (PluginConfig.Instance.FurtherVisible) {
+                this.textParameters[3] = defaultParams[3];
+            }
+            else {
+                this.textParameters[3] = visibleParam;
+            }
+            if (PluginConfig.Instance.FarVisible) {
+                this.textParameters[4] = defaultParams[4];
+            }
+            else {
+                this.textParameters[4] = visibleParam;
+            }
         }
 
         #region Monobehaviour Messages
@@ -90,38 +127,42 @@ namespace NJOCheck
         PlayerSettingsPanelController playerSettingsPanelController;
         NoteJumpStartBeatOffsetDropdown noteJumpStartBeatOffsetDropdown;
         TextMeshProUGUI notificationText;
-
-        TextParameter[] textParameters = new TextParameter[5]
+        private static readonly TextParameter visibleParam = new TextParameter
         {
-            new TextParameter()
+            TextColor = new Color(0, 0, 0, 0),
+        };
+        TextParameter[] textParameters;
+        private static readonly NJOCheckController.TextParameter[] defaultParams = new NJOCheckController.TextParameter[5]
+        {
+            new NJOCheckController.TextParameter()
             {
                 Text = "CLOSE",
                 Scale = new Vector3(0.3f, 0.3f, 0.3f),
                 Position = new Vector3(0f, 1.5f, 6f),
                 TextColor = Color.red
             },
-            new TextParameter()
+            new NJOCheckController.TextParameter()
             {
                 Text = "CLOSER",
                 Scale = new Vector3(0.7f, 0.7f, 0.7f),
                 Position = new Vector3(0f, 1.5f, 14f),
                 TextColor = Color.yellow
             },
-            new TextParameter()
+            new NJOCheckController.TextParameter()
             {
                 Text = "DEFAULT",
                 Scale = new Vector3(1f, 1f, 1f),
                 Position = new Vector3(0f, 1.5f, 22f),
                 TextColor = new Color(0, 0, 0, 0)
             },
-            new TextParameter()
+            new NJOCheckController.TextParameter()
             {
                 Text = "FURTHER",
                 Scale = new Vector3(1.5f, 1.5f, 1.5f),
                 Position = new Vector3(0f, 3f, 30f),
                 TextColor = Color.blue
             },
-            new TextParameter()
+            new NJOCheckController.TextParameter()
             {
                 Text = "FAR",
                 Scale = new Vector3(3f, 3f, 3f),
