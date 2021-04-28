@@ -3,12 +3,6 @@ using HMUI;
 using IPA.Utilities;
 using NJOCheck.Configuration;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,13 +19,22 @@ namespace NJOCheck
     {
         // These methods are automatically called by Unity, you should remove any you aren't using.
         [Inject]
-        void Constractor(DiContainer container)
+        void Constractor(GameplaySetupViewController container, PlayerDataModel model, StandardLevelDetailViewController standard)
         {
             this.CreateParams();
-            this.gameplaySetupViewController = container.TryResolve<GameplaySetupViewController>();
-            this.playerDataModel = container.Resolve<PlayerDataModel>();
+            this.gameplaySetupViewController = container;
+            this.playerDataModel = model;
+            var detailview = standard.GetField<StandardLevelDetailView, StandardLevelDetailViewController>("_standardLevelDetailView");
+            this._actionButton = detailview.actionButton;
+            if (this._actionButton is NoTransitionsButton noTransitionsButton) {
+                foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
+                    if (bg.name == "BG") {
+                        bg.SetField("_gradient", false);
+                        this._defaultColor = bg.color;
+                    }
+                }
+            }
             this.playerSettingsPanelController = this.gameplaySetupViewController.GetField<PlayerSettingsPanelController, GameplaySetupViewController>("_playerSettingsPanelController");
-            Plugin.Log.Debug($"{this.playerSettingsPanelController}");
         }
 
         private void CreateParams()
@@ -85,10 +88,10 @@ namespace NJOCheck
         private void Start()
         {
             try {
-                this.screen = new GameObject("NotificationText", typeof(CanvasScaler), typeof(RectMask2D), typeof(VRGraphicRaycaster), typeof(CurvedCanvasSettings));
-                this.screen.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", BeatSaberUI.PhysicsRaycasterWithCache);
-                this.screen.transform.localScale = new Vector3(1f, 1f, 1f);
-                this.notificationText = BeatSaberUI.CreateText(screen.gameObject.transform as RectTransform, "DEFAULT", Vector2.zero);
+                this.screenGO = new GameObject("NotificationText", typeof(CanvasScaler), typeof(RectMask2D), typeof(VRGraphicRaycaster), typeof(CurvedCanvasSettings));
+                this.screenGO.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", BeatSaberUI.PhysicsRaycasterWithCache);
+                this.screenGO.transform.localScale = new Vector3(1f, 1f, 1f);
+                this.notificationText = BeatSaberUI.CreateText(screenGO.gameObject.transform as RectTransform, "DEFAULT", Vector2.zero);
                 this.notificationText.alignment = TextAlignmentOptions.Center;
                 this.notificationText.autoSizeTextContainer = false;
                 this.noteJumpStartBeatOffsetDropdown = this.playerSettingsPanelController.GetField<NoteJumpStartBeatOffsetDropdown, PlayerSettingsPanelController>("_noteJumpStartBeatOffsetDropdown");
@@ -116,17 +119,34 @@ namespace NJOCheck
             }
 
             notificationText.text = this.textParameters[obj].Text;
-            this.screen.transform.localScale = this.textParameters[obj].Scale;
-            this.screen.transform.localPosition = this.textParameters[obj].Position;
+            this.screenGO.transform.localScale = this.textParameters[obj].Scale;
+            this.screenGO.transform.localPosition = this.textParameters[obj].Position;
             notificationText.color = this.textParameters[obj].TextColor;
+            if (this._actionButton is NoTransitionsButton noTransitionsButton) {
+                foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
+                    if (bg.name == "BG") {
+                        if (obj == 2) {
+                            bg.color = this._defaultColor;
+                            bg.SetField("_gradient", true);
+                        }
+                        else {
+                            bg.color = this.textParameters[obj].TextColor;
+                            bg.SetField("_gradient", false);
+                        }
+                    }
+                }
+            }
         }
 
-        GameObject screen;
+        GameObject screenGO;
         PlayerDataModel playerDataModel;
         GameplaySetupViewController gameplaySetupViewController;
         PlayerSettingsPanelController playerSettingsPanelController;
         NoteJumpStartBeatOffsetDropdown noteJumpStartBeatOffsetDropdown;
         TextMeshProUGUI notificationText;
+        Button _actionButton;
+        Color _defaultColor;
+
         private static readonly TextParameter visibleParam = new TextParameter
         {
             TextColor = new Color(0, 0, 0, 0),
@@ -153,7 +173,7 @@ namespace NJOCheck
                 Text = "DEFAULT",
                 Scale = new Vector3(1f, 1f, 1f),
                 Position = new Vector3(0f, 1.5f, 22f),
-                TextColor = new Color(0, 0, 0, 0)
+                TextColor = Color.gray
             },
             new NJOCheckController.TextParameter()
             {
