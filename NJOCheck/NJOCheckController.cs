@@ -2,6 +2,7 @@
 using HMUI;
 using IPA.Utilities;
 using NJOCheck.Configuration;
+using NJOCheck.Extentions;
 using System;
 using TMPro;
 using UnityEngine;
@@ -95,13 +96,40 @@ namespace NJOCheck
                 this.notificationText.alignment = TextAlignmentOptions.Center;
                 this.notificationText.autoSizeTextContainer = false;
                 this.noteJumpStartBeatOffsetDropdown = this.playerSettingsPanelController.GetField<NoteJumpStartBeatOffsetDropdown, PlayerSettingsPanelController>("_noteJumpStartBeatOffsetDropdown");
-                this.noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
-                this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(noteJumpStartBeatOffsetDropdown.GetIdxForOffset(playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset));
+                this.noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent; // += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
+                this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(noteJumpStartBeatOffsetDropdown.GetIdxForOffset(playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset), playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
             }
             catch (Exception e) {
                 Plugin.Log.Error(e);
             }
         }
+
+        private void NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(int arg1, float arg2)
+        {
+            if (textParameters.Length < (uint)arg1) {
+                return;
+            }
+
+            notificationText.text = this.textParameters[arg1].Text;
+            this.screenGO.transform.localScale = this.textParameters[arg1].Scale;
+            this.screenGO.transform.localPosition = this.textParameters[arg1].Position;
+            notificationText.color = this.textParameters[arg1].TextColor;
+            if (this._actionButton is NoTransitionsButton noTransitionsButton) {
+                foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
+                    if (bg.name == "BG") {
+                        if (arg1 == 2) {
+                            bg.color = this._defaultColor;
+                            bg.SetField("_gradient", true);
+                        }
+                        else {
+                            bg.color = this.textParameters[arg1].TextColor;
+                            bg.SetField("_gradient", false);
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Called when the script is being destroyed.
         /// </summary>
@@ -111,32 +139,6 @@ namespace NJOCheck
             Destroy(this.notificationText.gameObject);
         }
         #endregion
-
-        private void NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(int obj)
-        {
-            if (textParameters.Length < (uint)obj) {
-                return;
-            }
-
-            notificationText.text = this.textParameters[obj].Text;
-            this.screenGO.transform.localScale = this.textParameters[obj].Scale;
-            this.screenGO.transform.localPosition = this.textParameters[obj].Position;
-            notificationText.color = this.textParameters[obj].TextColor;
-            if (this._actionButton is NoTransitionsButton noTransitionsButton) {
-                foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
-                    if (bg.name == "BG") {
-                        if (obj == 2) {
-                            bg.color = this._defaultColor;
-                            bg.SetField("_gradient", true);
-                        }
-                        else {
-                            bg.color = this.textParameters[obj].TextColor;
-                            bg.SetField("_gradient", false);
-                        }
-                    }
-                }
-            }
-        }
 
         GameObject screenGO;
         PlayerDataModel playerDataModel;

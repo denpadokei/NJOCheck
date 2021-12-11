@@ -29,7 +29,7 @@ namespace NJOCheck
             
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
-            zenjector.OnMenu<NJOMenuInstaller>();
+            zenjector.Install<NJOMenuInstaller>(Location.Menu);
         }
 
         #endregion
