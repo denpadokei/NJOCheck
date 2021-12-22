@@ -12,7 +12,7 @@ namespace NJOCheck.Installer
     {
         public override void InstallBindings()
         {
-            this.Container.BindInterfacesAndSelfTo<NJOCheckController>().FromNewComponentOnNewGameObject("NJOCheck").AsCached().NonLazy();
+            this.Container.BindInterfacesAndSelfTo<NJOCheckController>().FromNewComponentOnNewGameObject().AsCached().NonLazy();
         }
     }
 }
