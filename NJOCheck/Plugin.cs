@@ -3,12 +3,6 @@ using IPA.Config;
 using IPA.Config.Stores;
 using NJOCheck.Installer;
 using SiraUtil.Zenject;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
 
 namespace NJOCheck
@@ -26,7 +20,7 @@ namespace NJOCheck
             Instance = this;
             Log = logger;
             Log.Info("NJOCheck initialized.");
-            
+
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
             zenjector.Install<NJOMenuInstaller>(Location.Menu);

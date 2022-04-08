@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using IPA.Config.Stores;
 using System.Runtime.CompilerServices;
-using IPA.Config.Stores;
-using UnityEngine;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace NJOCheck.Configuration
