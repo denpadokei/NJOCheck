@@ -114,8 +114,8 @@ namespace NJOCheck
                                 if (bg.name != "BG") {
                                     continue;
                                 }
-                                bg.color = this._staticParam.TextColor;
-                                bg.SetField("_gradient", false);
+                                bg.color = PluginConfig.Instance.StaticVisible ? this._staticParam.TextColor : this._defaultColor;
+                                bg.SetField("_gradient", !PluginConfig.Instance.StaticVisible);
                             }
                         }
                         break;
