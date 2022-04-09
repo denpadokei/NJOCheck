@@ -67,7 +67,7 @@ namespace NJOCheck
         private void OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent(int arg1, NoteJumpDurationTypeSettings arg2)
         {
             this._currentDurationType = arg2;
-            this.UpdateNotificationScreen(NoteJumpDurationTypeSettings.Static);
+            this.UpdateNotificationScreen(arg2);
         }
 
         private void NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(int arg1, float arg2)
