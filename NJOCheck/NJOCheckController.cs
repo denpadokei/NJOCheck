@@ -40,48 +40,42 @@ namespace NJOCheck
         #region // プライベートメソッド
         private void CreateParams()
         {
-            this.textParameters = new TextParameter[6];
+            this._dynamicTextParameters = new TextParameter[5];
             if (PluginConfig.Instance.CloseVisible) {
-                this.textParameters[0] = defaultParams[0];
+                this._dynamicTextParameters[0] = s_defaultDynamicParams[0];
             }
             else {
-                this.textParameters[0] = visibleParam;
+                this._dynamicTextParameters[0] = s_visibleParam;
             }
             if (PluginConfig.Instance.CloserVisible) {
-                this.textParameters[1] = defaultParams[1];
+                this._dynamicTextParameters[1] = s_defaultDynamicParams[1];
             }
             else {
-                this.textParameters[1] = visibleParam;
+                this._dynamicTextParameters[1] = s_visibleParam;
             }
             if (PluginConfig.Instance.DefaultVisible) {
-                this.textParameters[2] = defaultParams[2];
+                this._dynamicTextParameters[2] = s_defaultDynamicParams[2];
             }
             else {
-                this.textParameters[2] = visibleParam;
+                this._dynamicTextParameters[2] = s_visibleParam;
             }
             if (PluginConfig.Instance.FurtherVisible) {
-                this.textParameters[3] = defaultParams[3];
+                this._dynamicTextParameters[3] = s_defaultDynamicParams[3];
             }
             else {
-                this.textParameters[3] = visibleParam;
+                this._dynamicTextParameters[3] = s_visibleParam;
             }
             if (PluginConfig.Instance.FarVisible) {
-                this.textParameters[4] = defaultParams[4];
+                this._dynamicTextParameters[4] = s_defaultDynamicParams[4];
             }
             else {
-                this.textParameters[4] = visibleParam;
+                this._dynamicTextParameters[4] = s_visibleParam;
             }
             if (PluginConfig.Instance.StaticVisible) {
-                this._staticParam = new NJOCheckController.TextParameter()
-                {
-                    Text = "STATIC",
-                    Scale = new Vector3(1f, 1f, 1f),
-                    Position = new Vector3(0f, 1.5f, 22f),
-                    TextColor = Color.cyan
-                };
+                this._staticParam = s_defaultStaticParam;
             }
             else {
-                this._staticParam = visibleParam;
+                this._staticParam = s_visibleParam;
             }
         }
 
@@ -101,13 +95,13 @@ namespace NJOCheck
         {
             switch (noteJumpDuration) {
                 case NoteJumpDurationTypeSettings.Dynamic: {
-                        if (this.textParameters.Length < (uint)this._currentOffsetIndex) {
+                        if (this._dynamicTextParameters.Length < (uint)this._currentOffsetIndex) {
                             return;
                         }
-                        this.notificationText.text = this._duratonNames.ElementAt(this._currentOffsetIndex)?.Item2;
-                        this.screenGO.transform.localScale = this.textParameters[this._currentOffsetIndex].Scale;
-                        this.screenGO.transform.localPosition = this.textParameters[this._currentOffsetIndex].Position;
-                        this.notificationText.color = this.textParameters[this._currentOffsetIndex].TextColor;
+                        this._notificationText.text = this._duratonNames.ElementAt(this._currentOffsetIndex)?.Item2;
+                        this._screenGO.transform.localScale = this._dynamicTextParameters[this._currentOffsetIndex].Scale;
+                        this._screenGO.transform.localPosition = this._dynamicTextParameters[this._currentOffsetIndex].Position;
+                        this._notificationText.color = this._dynamicTextParameters[this._currentOffsetIndex].TextColor;
                         if (this._actionButton is NoTransitionsButton noTransitionsButton) {
                             foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
                                 if (bg.name != "BG") {
@@ -118,7 +112,7 @@ namespace NJOCheck
                                     bg.SetField("_gradient", true);
                                 }
                                 else {
-                                    bg.color = this.textParameters[this._currentOffsetIndex].TextColor;
+                                    bg.color = this._dynamicTextParameters[this._currentOffsetIndex].TextColor;
                                     bg.SetField("_gradient", false);
                                 }
                             }
@@ -126,18 +120,17 @@ namespace NJOCheck
                         break;
                     }
                 case NoteJumpDurationTypeSettings.Static: {
-                        this.notificationText.text = this._staticName;
-                        this.screenGO.transform.localScale = this._staticParam.Scale;
-                        this.screenGO.transform.localPosition = this._staticParam.Position;
-                        this.notificationText.color = this._staticParam.TextColor;
+                        this._notificationText.text = this._staticName;
+                        this._screenGO.transform.localScale = this._staticParam.Scale;
+                        this._screenGO.transform.localPosition = this._staticParam.Position;
+                        this._notificationText.color = this._staticParam.TextColor;
                         if (this._actionButton is NoTransitionsButton noTransitionsButton) {
                             foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
                                 if (bg.name != "BG") {
                                     continue;
                                 }
-                                this.screenGO.SetActive(false);
-                                bg.color = this._defaultColor;
-                                bg.SetField("_gradient", true);
+                                bg.color = this._staticParam.TextColor;
+                                bg.SetField("_gradient", false);
                             }
                         }
                         break;
@@ -149,28 +142,28 @@ namespace NJOCheck
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
-        private GameObject screenGO;
-        private PlayerDataModel playerDataModel;
-        private GameplaySetupViewController gameplaySetupViewController;
-        private PlayerSettingsPanelController playerSettingsPanelController;
-        private NoteJumpStartBeatOffsetDropdown noteJumpStartBeatOffsetDropdown;
+        private GameObject _screenGO;
+        private PlayerDataModel _playerDataModel;
+        private GameplaySetupViewController _gameplaySetupViewController;
+        private PlayerSettingsPanelController _playerSettingsPanelController;
+        private NoteJumpStartBeatOffsetDropdown _noteJumpStartBeatOffsetDropdown;
         private NoteJumpDurationTypeSettingsDropdown _noteJumpDurationTypeSettingsDropdown;
-        private TextMeshProUGUI notificationText;
+        private TextMeshProUGUI _notificationText;
         private Button _actionButton;
         private Color _defaultColor;
         private int _currentOffsetIndex = 0;
         private NoteJumpDurationTypeSettings _currentDurationType = NoteJumpDurationTypeSettings.Dynamic;
         private List<Tuple<float, string>> _duratonNames;
         private string _staticName;
+        private TextParameter[] _dynamicTextParameters;
+        private TextParameter _staticParam;
+        private bool _disposedValue;
 
-        private static readonly TextParameter visibleParam = new TextParameter
+        private static readonly TextParameter s_visibleParam = new TextParameter
         {
             TextColor = new Color(0, 0, 0, 0),
         };
-        private TextParameter _staticParam;
-        private TextParameter[] textParameters;
-        private bool _disposedValue;
-        private static readonly NJOCheckController.TextParameter[] defaultParams = new NJOCheckController.TextParameter[]
+        private static readonly NJOCheckController.TextParameter[] s_defaultDynamicParams = new NJOCheckController.TextParameter[]
         {
             new NJOCheckController.TextParameter()
             {
@@ -208,6 +201,13 @@ namespace NJOCheck
                 TextColor = Color.green
             }
         };
+        private static readonly TextParameter s_defaultStaticParam = new NJOCheckController.TextParameter()
+        {
+            Text = "STATIC",
+            Scale = new Vector3(1f, 1f, 1f),
+            Position = new Vector3(0f, 1.5f, 22f),
+            TextColor = Color.cyan
+        };
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
@@ -215,8 +215,8 @@ namespace NJOCheck
         private void Constractor(GameplaySetupViewController container, PlayerDataModel model, StandardLevelDetailViewController standard)
         {
             this.CreateParams();
-            this.gameplaySetupViewController = container;
-            this.playerDataModel = model;
+            this._gameplaySetupViewController = container;
+            this._playerDataModel = model;
             var detailview = standard.GetField<StandardLevelDetailView, StandardLevelDetailViewController>("_standardLevelDetailView");
             this._actionButton = detailview.actionButton;
             if (this._actionButton is NoTransitionsButton noTransitionsButton) {
@@ -227,7 +227,7 @@ namespace NJOCheck
                     }
                 }
             }
-            this.playerSettingsPanelController = this.gameplaySetupViewController.GetField<PlayerSettingsPanelController, GameplaySetupViewController>("_playerSettingsPanelController");
+            this._playerSettingsPanelController = this._gameplaySetupViewController.GetField<PlayerSettingsPanelController, GameplaySetupViewController>("_playerSettingsPanelController");
         }
 
         protected virtual void Dispose(bool disposing)
@@ -236,7 +236,7 @@ namespace NJOCheck
                 if (disposing) {
                     try {
                         this._noteJumpDurationTypeSettingsDropdown.didSelectCellWithIdxEvent -= this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent;
-                        this.noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent -= this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
+                        this._noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent -= this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
                     }
                     catch (Exception e) {
                         Plugin.Log.Error(e);
@@ -262,15 +262,15 @@ namespace NJOCheck
         private void Start()
         {
             try {
-                this.screenGO = new GameObject("NotificationText", typeof(CanvasScaler), typeof(RectMask2D), typeof(VRGraphicRaycaster), typeof(CurvedCanvasSettings));
-                this.screenGO.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", BeatSaberUI.PhysicsRaycasterWithCache);
-                this.screenGO.transform.localScale = new Vector3(1f, 1f, 1f);
-                this.notificationText = BeatSaberUI.CreateText(this.screenGO.gameObject.transform as RectTransform, "DEFAULT", Vector2.zero);
-                this.notificationText.alignment = TextAlignmentOptions.Center;
-                this.notificationText.autoSizeTextContainer = false;
-                this.noteJumpStartBeatOffsetDropdown = this.playerSettingsPanelController.GetField<NoteJumpStartBeatOffsetDropdown, PlayerSettingsPanelController>("_noteJumpStartBeatOffsetDropdown");
-                this._noteJumpDurationTypeSettingsDropdown = this.playerSettingsPanelController.GetField<NoteJumpDurationTypeSettingsDropdown, PlayerSettingsPanelController>("_noteJumpDurationTypeSettingsDropdown");
-                this.noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
+                this._screenGO = new GameObject("NotificationText", typeof(CanvasScaler), typeof(RectMask2D), typeof(VRGraphicRaycaster), typeof(CurvedCanvasSettings));
+                this._screenGO.GetComponent<VRGraphicRaycaster>().SetField("_physicsRaycaster", BeatSaberUI.PhysicsRaycasterWithCache);
+                this._screenGO.transform.localScale = new Vector3(1f, 1f, 1f);
+                this._notificationText = BeatSaberUI.CreateText(this._screenGO.gameObject.transform as RectTransform, "DEFAULT", Vector2.zero);
+                this._notificationText.alignment = TextAlignmentOptions.Center;
+                this._notificationText.autoSizeTextContainer = false;
+                this._noteJumpStartBeatOffsetDropdown = this._playerSettingsPanelController.GetField<NoteJumpStartBeatOffsetDropdown, PlayerSettingsPanelController>("_noteJumpStartBeatOffsetDropdown");
+                this._noteJumpDurationTypeSettingsDropdown = this._playerSettingsPanelController.GetField<NoteJumpDurationTypeSettingsDropdown, PlayerSettingsPanelController>("_noteJumpDurationTypeSettingsDropdown");
+                this._noteJumpStartBeatOffsetDropdown.didSelectCellWithIdxEvent += this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent;
                 this._noteJumpDurationTypeSettingsDropdown.didSelectCellWithIdxEvent += this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent;
                 this._duratonNames = new List<Tuple<float, string>>();
                 TupleListExtensions.Add(this._duratonNames, -0.5f, Localization.Get("PLAYER_SETTINGS_JUMP_START_CLOSE"));
@@ -279,8 +279,19 @@ namespace NJOCheck
                 TupleListExtensions.Add(this._duratonNames, 0.25f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FURTHER"));
                 TupleListExtensions.Add(this._duratonNames, 0.5f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FAR"));
                 this._staticName = Localization.Get("PLAYER_SETTINGS_NOTE_JUMP_DURATION_TYPE_STATIC");
-                this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent((int)this.playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings, this.playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings);
-                this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(this.noteJumpStartBeatOffsetDropdown.GetIdxForOffset(this.playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset), this.playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
+                this._currentDurationType = this._playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings;
+                this._currentOffsetIndex = this._noteJumpStartBeatOffsetDropdown.GetIdxForOffset(this._playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
+                switch (this._currentDurationType) {
+                    case NoteJumpDurationTypeSettings.Dynamic:
+                        this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent((int)this._currentDurationType, NoteJumpDurationTypeSettings.Dynamic);
+                        this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(this._currentOffsetIndex, this._playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
+                        break;
+                    case NoteJumpDurationTypeSettings.Static:
+                        this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent((int)this._currentDurationType, NoteJumpDurationTypeSettings.Static);
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (Exception e) {
                 Plugin.Log.Error(e);
@@ -293,7 +304,7 @@ namespace NJOCheck
         private void OnDestroy()
         {
             Plugin.Log?.Debug($"{this.name}: OnDestroy()");
-            Destroy(this.screenGO);
+            Destroy(this._screenGO);
         }
         #endregion
         public struct TextParameter
