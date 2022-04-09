@@ -43,7 +43,7 @@ namespace NJOCheck
 
         private void CreateParams()
         {
-            this.textParameters = new TextParameter[5];
+            this.textParameters = new TextParameter[6];
             if (PluginConfig.Instance.CloseVisible) {
                 this.textParameters[0] = defaultParams[0];
             }
@@ -73,6 +73,12 @@ namespace NJOCheck
             }
             else {
                 this.textParameters[4] = visibleParam;
+            }
+            if (PluginConfig.Instance.StaticVisible) {
+                this.textParameters[5] = defaultParams[5];
+            }
+            else {
+                this.textParameters[5] = visibleParam;
             }
         }
 
@@ -108,6 +114,7 @@ namespace NJOCheck
                 TupleListExtensions.Add(this._duratonNames, 0f, Localization.Get("PLAYER_SETTINGS_JUMP_START_DEFAULT"));
                 TupleListExtensions.Add(this._duratonNames, 0.25f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FURTHER"));
                 TupleListExtensions.Add(this._duratonNames, 0.5f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FAR"));
+                this._staticName = Localization.Get("PLAYER_SETTINGS_NOTE_JUMP_DURATION_TYPE_STATIC");
                 this.OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent((int)this.playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings, this.playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings);
                 this.NoteJumpStartBeatOffsetDropdown_didSelectCellWithIdxEvent(this.noteJumpStartBeatOffsetDropdown.GetIdxForOffset(this.playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset), this.playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
             }
@@ -119,6 +126,9 @@ namespace NJOCheck
         private void OnNoteJumpDurationTypeSettingsDropdown_didSelectCellWithIdxEvent(int arg1, NoteJumpDurationTypeSettings arg2)
         {
             this._currentDurationType = arg2;
+            if (PluginConfig.Instance.StaticVisible) {
+                arg2 = NoteJumpDurationTypeSettings.Dynamic;
+            }
             if (this._actionButton is NoTransitionsButton noTransitionsButton) {
                 foreach (var bg in noTransitionsButton.gameObject.GetComponentsInChildren<ImageView>()) {
                     if (bg.name != "BG") {
@@ -148,9 +158,15 @@ namespace NJOCheck
             }
             this._currentOffsetIndex = arg1;
             if (this._currentDurationType == NoteJumpDurationTypeSettings.Static) {
-                return;
+                if (!PluginConfig.Instance.StaticVisible) {
+                    return;
+                }
+                this.notificationText.text = this._staticName;
+                arg1 = 5;
             }
-            this.notificationText.text = this._duratonNames.FirstOrDefault(x => x.Item1 == arg2)?.Item2;
+            else {
+                this.notificationText.text = this._duratonNames.FirstOrDefault(x => x.Item1 == arg2)?.Item2;
+            }
             this.screenGO.transform.localScale = this.textParameters[arg1].Scale;
             this.screenGO.transform.localPosition = this.textParameters[arg1].Position;
             this.notificationText.color = this.textParameters[arg1].TextColor;
@@ -192,6 +208,7 @@ namespace NJOCheck
         private int _currentOffsetIndex = 0;
         private NoteJumpDurationTypeSettings _currentDurationType = NoteJumpDurationTypeSettings.Dynamic;
         private List<Tuple<float, string>> _duratonNames;
+        private string _staticName;
 
         private static readonly TextParameter visibleParam = new TextParameter
         {
@@ -199,7 +216,7 @@ namespace NJOCheck
         };
         private TextParameter[] textParameters;
         private bool _disposedValue;
-        private static readonly NJOCheckController.TextParameter[] defaultParams = new NJOCheckController.TextParameter[5]
+        private static readonly NJOCheckController.TextParameter[] defaultParams = new NJOCheckController.TextParameter[6]
         {
             new NJOCheckController.TextParameter()
             {
@@ -235,6 +252,13 @@ namespace NJOCheck
                 Scale = new Vector3(3f, 3f, 3f),
                 Position = new Vector3(0f, 4f, 50f),
                 TextColor = Color.green
+            },
+            new NJOCheckController.TextParameter()
+            {
+                Text = "STATIC",
+                Scale = new Vector3(1f, 1f, 1f),
+                Position = new Vector3(0f, 1.5f, 22f),
+                TextColor = Color.cyan
             }
         };
         public struct TextParameter

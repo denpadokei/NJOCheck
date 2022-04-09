@@ -12,6 +12,7 @@ namespace NJOCheck.Configuration
         public virtual bool DefaultVisible { get; set; } = false;
         public virtual bool FurtherVisible { get; set; } = true;
         public virtual bool FarVisible { get; set; } = true;
+        public virtual bool StaticVisible { get; set; } = false;
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
