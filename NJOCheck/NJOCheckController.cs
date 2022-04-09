@@ -22,21 +22,6 @@ namespace NJOCheck
     public class NJOCheckController : MonoBehaviour, IDisposable
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // プロパティ
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // コマンド用メソッド
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // オーバーライドメソッド
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
-        #region // パブリックメソッド
-        #endregion
-        //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
         private void CreateParams()
         {
@@ -120,7 +105,7 @@ namespace NJOCheck
                         break;
                     }
                 case NoteJumpDurationTypeSettings.Static: {
-                        this._notificationText.text = this._staticName;
+                        this._notificationText.text = s_staticName;
                         this._screenGO.transform.localScale = this._staticParam.Scale;
                         this._screenGO.transform.localPosition = this._staticParam.Position;
                         this._notificationText.color = this._staticParam.TextColor;
@@ -154,7 +139,7 @@ namespace NJOCheck
         private int _currentOffsetIndex = 0;
         private NoteJumpDurationTypeSettings _currentDurationType = NoteJumpDurationTypeSettings.Dynamic;
         private List<Tuple<float, string>> _duratonNames;
-        private string _staticName;
+        private static readonly string s_staticName = Localization.Get("PLAYER_SETTINGS_NOTE_JUMP_DURATION_TYPE_STATIC");
         private TextParameter[] _dynamicTextParameters;
         private TextParameter _staticParam;
         private bool _disposedValue;
@@ -278,7 +263,6 @@ namespace NJOCheck
                 TupleListExtensions.Add(this._duratonNames, 0f, Localization.Get("PLAYER_SETTINGS_JUMP_START_DEFAULT"));
                 TupleListExtensions.Add(this._duratonNames, 0.25f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FURTHER"));
                 TupleListExtensions.Add(this._duratonNames, 0.5f, Localization.Get("PLAYER_SETTINGS_JUMP_START_FAR"));
-                this._staticName = Localization.Get("PLAYER_SETTINGS_NOTE_JUMP_DURATION_TYPE_STATIC");
                 this._currentDurationType = this._playerDataModel.playerData.playerSpecificSettings.noteJumpDurationTypeSettings;
                 this._currentOffsetIndex = this._noteJumpStartBeatOffsetDropdown.GetIdxForOffset(this._playerDataModel.playerData.playerSpecificSettings.noteJumpStartBeatOffset);
                 switch (this._currentDurationType) {
